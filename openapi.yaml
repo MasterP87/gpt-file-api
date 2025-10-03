@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  title: GPT File Manager API
+  version: 1.0.0
+  description: API für ein GPT zum Erstellen, Bearbeiten, Löschen und ZIPpen von Dateien
+servers:
+  - url: https://gpt-file-api.vercel.app/api
+paths:
+  /files:
+    post:
+      operationId: createFile
+      summary: Erstellt eine Datei
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, content]
+              properties:
+                filename:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Datei erstellt
+  /files/{filename}:
+    get:
+      operationId: getFile
+      summary: Holt den Inhalt einer Datei
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dateiinhalte
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filename:
+                    type: string
+                  content:
+                    type: string
+    put:
+      operationId: editFile
+      summary: Bearbeitet eine Datei
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Datei bearbeitet
+    delete:
+      operationId: deleteFile
+      summary: Löscht eine Datei
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Datei gelöscht
+  /files/{filename}/download:
+    get:
+      operationId: downloadFile
+      summary: Liefert einen Download-Link für eine Datei
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Download-Link
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
+  /projects/export:
+    post:
+      operationId: exportProjectAsZip
+      summary: Erstellt ein ZIP-Archiv aus allen Dateien
+      responses:
+        '200':
+          description: Download-Link für ZIP-Datei
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                    format: uri
